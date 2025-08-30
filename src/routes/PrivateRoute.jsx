@@ -1,9 +1,22 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import useAuth from "../hooks/useAuth";
+import { Navigate, useLocation } from "react-router";
+// This component is used to protect routes that require authentication
+const PrivateRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  // console.log(location);
+  const from = location?.pathname;
 
-export default function PrivateRoute({ children }) {
-  const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
+  if (loading) {
+    return "Loading..."; // You can replace this with a custom loader component
+  }
+
+  if (!user) {
+    return <Navigate state={from} to="/login" />;
+  }
+
   return children;
-}
+};
+
+export default PrivateRoute;

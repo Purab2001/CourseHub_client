@@ -1,2 +1,23 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+  root: ":root";
+  logs: true;
+}
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #cf4434;
+  --color-secondary: #ea9b92;
+  --color-accent: #e7695a;
+}
+@plugin "daisyui/theme" {
+  name: "dark";
+  --color-primary: #ca3f2f;
+  --color-secondary: #6b1d14;
+  --color-accent: #a52618;
+}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+body {
+  font-family: 'Outfit', sans-serif;
+}
