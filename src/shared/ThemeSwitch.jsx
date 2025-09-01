@@ -2,7 +2,7 @@ import React from "react";
 import { MdDarkMode } from "react-icons/md";
 import { CiLight } from "react-icons/ci";
 import { motion } from "motion/react";
-import { useTheme } from "../contexts/ThemeContext";
+import { useTheme } from "../context/ThemeContext";
 
 const ThemeSwitch = () => {
   const { theme, toggleTheme } = useTheme();
@@ -11,7 +11,7 @@ const ThemeSwitch = () => {
   const iconVariants = {
     initial: { scale: 1, rotate: "0deg" },
     whileHover: {
-      scale: 2,
+      scale: 1.05,
       x: 5,
       rotate: theme === "dark" ? "0deg" : "180deg",
     },

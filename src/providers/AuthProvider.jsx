@@ -12,6 +12,11 @@ import {
 } from "firebase/auth";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../firebase/firebase.init";
+import axios from "axios";
+
+const axiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+});
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -50,13 +55,33 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        setUser(currentUser);
-        setLoading(false);
-        // console.log('user from auth state change->', currentUser);
+        try {
+          // Fetch profile from backend to get the latest data (including photoURL)
+          const token = await currentUser.getIdToken();
+          const response = await axiosInstance.get("/api/auth/profile", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.data?.user) {
+            // Merge Firebase user with backend user data
+            const mergedUser = {
+              ...currentUser,
+              ...response.data.user, // Backend data overrides firebase where needed (e.g., photoURL)
+              photoURL: response.data.user.photoURL || currentUser.photoURL, // Prioritize backend photoURL
+            };
+            setUser(mergedUser);
+          } else {
+            setUser(currentUser); // Fallback to firebase user
+          }
+        } catch (error) {
+          console.error("Failed to fetch user profile from backend", error);
+          setUser(currentUser); // Fallback to firebase user on error
+        }
       } else {
-        // console.log('user state from auth state->', currentUser);
         setUser(null);
       }
       setLoading(false);

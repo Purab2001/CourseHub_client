@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { AuthProvider } from "./context/AuthContext";
+import AuthProvider from "./providers/AuthProvider";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const queryClient = new QueryClient();

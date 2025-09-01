@@ -6,7 +6,7 @@ export default function MainLayout({ children }) {
   return (
     <div>
       <Navbar />
-      <main style={{ padding: "1rem" }}>{children}</main>
+      <main>{children}</main>
       <Footer />
     </div>
   );

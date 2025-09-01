@@ -3,34 +3,38 @@ import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-    const [theme, setTheme] = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('theme');
-            const systemPref = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-            return saved || systemPref;
-        }
-        return "light"; 
-    });
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("theme");
+      const systemPref = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+      return saved || systemPref;
+    }
+    return "light";
+  });
 
-    useEffect(() => {
-        localStorage.setItem("theme", theme);
-        document.documentElement.classList.remove("light", "dark");
-        document.documentElement.classList.add(theme);
-    }, [theme]);
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    // Set DaisyUI theme attribute
+    document.documentElement.setAttribute("data-theme", theme);
+    // Also set class for additional CSS compatibility
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(theme);
+  }, [theme]);
 
-    const toggleTheme = () => {
-        setTheme(prev => (prev === "light" ? "dark" : "light"));
-    };
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
-    return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-            <div className="transition-colors duration-1000">
-                {children}
-            </div>
-        </ThemeContext.Provider>
-    );
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <div className="transition-colors duration-1000">{children}</div>
+    </ThemeContext.Provider>
+  );
 }
 
 export function useTheme() {
-    return useContext(ThemeContext);
+  return useContext(ThemeContext);
 }
